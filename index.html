@@ -7,46 +7,38 @@
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <style>
+        #upgrades {width: 70%;}
+        .btn {width: 15%;}
+        .btn-warning {color: white !important;}
         canvas {
             position: absolute;
-            top: 45%;
-            left: 50%;
-            width: 640px;
-            height: 640px;
-            margin: -320px 0 0 -320px;
+            top: 8%;
+            left: 20%;
+            width: 60%;
+            height: 90%;
         }
     </style>
 </head>
  
 <body>
-
-    <div class="pos-f-t">
-      <div class="collapse" id="navbarToggleExternalContent">
-        <div class="bg-dark p-4">
-          <h5 class="text-white h4">Collapsed content</h5>
-          <span class="text-muted">Toggleable via the navbar brand.</span>
-        </div>
-      </div>
-      <nav class="navbar navbar-dark bg-dark">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      </nav>
+    <!-- Buttons along the top -->
+    <center>
+    <div id="upgrades">
+        <button type="button" class="btn btn-secondary" id="resetGameButton" onclick="resetGame()">New Game</button>
+        <button type="button" class="btn btn-primary" id="nextShapeButton" onclick="changeNextShape()">Change Next</button>
+        <button type="button" class="btn btn-success" id="slowTimeButton" onclick="slowDownTime()">Slow Time</button>
+        <button type="button" class="btn btn-warning" id="killFallingButton" onclick="killFallingPiece()">Kill Piece</button>
+        <button type="button" class="btn btn-danger">TBA</button>
     </div>
-
-
-    <div id="header">
-        <button id="nextShapeButton" onclick="changeNextShape()">Change Next</button>
-        <button id="slowTimeButton" onclick="slowDownTime()">Slow Time</button>
-    </div>
+    </center>
     <!-- CANVAS (where a majority of the game takes place) -->
     <div id="gameCanvas">
-        <br>
         <canvas></canvas>
     </div>
     <!-- JAVASCRIPT (where the game's functionality is put) -->
     <script>
         var slowTime = false;
+        var killFalling = false;
 
         'use strict';
         var canvas = document.querySelector('canvas');
@@ -80,18 +72,18 @@
         var previewCenterY = 97;
         var mainFont = 'bold 48px monospace';
         var smallFont = 'bold 18px monospace';
-        var colors = ['green', 'red', 'blue', 'purple', 'orange', 'blueviolet', 'magenta'];
-        var gridRect = { x: 46, y: 47, w: 308, h: 517 };
+        var colors = ['Green', 'Red', 'RoyalBlue', 'Gold', 'Gray', 'LightSeaGreen'];
+        var gridRect = { x: 46, y: 47, w: 308, h: 517 }; 
         var previewRect = { x: 387, y: 47, w: 200, h: 200 };
         var titleRect = { x: 100, y: 95, w: 252, h: 100 };
         var clickRect = { x: 50, y: 375, w: 252, h: 40 };
         var outerRect = { x: 5, y: 5, w: 630, h: 630 };
-        var squareBorder = 'white';
+        var squareBorder = 'black';
         var titlebgColor = 'white';
         var textColor = 'black';
-        var bgColor = '#DDEEFF';
-        var gridColor = '#BECFEA';
-        var gridBorderColor = '#7788AA';
+        var bgColor = 'white';
+        var gridColor = 'white';
+        var gridBorderColor = 'black';
         var largeStroke = 5;
         var smallStroke = 2;
  
@@ -198,6 +190,11 @@
         }
  
         function move(dir) {
+            if (killFalling === true) {
+                fallingShape = nextShape;
+                nextShape = getRandomShape();
+                killFalling = false;
+            }
             fallingShapeRow += dir.y;
             fallingShapeCol += dir.x;
         }
@@ -411,10 +408,10 @@
             fillRect(clickRect, titlebgColor);
  
             g.fillStyle = textColor;
-            g.fillText('Tetris', titleX, titleY);
+            g.fillText('☠️☠️☠️', titleX, titleY);
  
             g.font = smallFont;
-            g.fillText('Hit "R" to Reset', clickX, clickY);
+            g.fillText('Refresh to Reset', clickX, clickY);
         }
  
         function fillRect(r, color) {
@@ -555,22 +552,29 @@
         }
 
         //START OF MY ADDED FUNCTIONS
+        function resetGame() {
+            startNewGame();
+        }
+
         function changeNextShape() {
-            document.body.style.background = "red";
             nextShape = getRandomShape();
         }
 
         function slowDownTime() {
-            document.body.style.background = "blue";
-            slowTime = true;
+            if (slowTime === false)
+                {slowTime = true;}
+            else
+                {slowTime = false;}
         }
 
+        function killFallingPiece() {
+            killFalling = true;
+        }
         //END OF MY ADDED FUNCTIONS
 
         init();
 
     </script>
-
     <!-- Bootstrap JavaScript CDN -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
