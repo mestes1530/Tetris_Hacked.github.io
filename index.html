@@ -6,13 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <style>
-        #upgrades {width: 70%;}
+        body {
+            background-image: url('https://bilder.tapeto.com/item/images/2651/full/metropolis-michalsky-ab-9393-71-0.jpg');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            background-size: cover;   
+        }
+        #upgrades {width: 72%;}
         .btn {width: 15%;}
         .btn-warning {color: white !important;}
+        #resetGameButton {
+            position: absolute;
+            bottom: 0%;
+            margin-left: 20%;
+            width: 60%;
+        }
         canvas {
             position: absolute;
-            top: 8%;
+            top: 7%;
             left: 20%;
             width: 60%;
             height: 90%;
@@ -21,20 +36,22 @@
 </head>
  
 <body>
+
     <!-- Buttons along the top -->
     <center>
     <div id="upgrades">
-        <button type="button" class="btn btn-secondary" id="resetGameButton" onclick="resetGame()">New Game</button>
-        <button type="button" class="btn btn-primary" id="nextShapeButton" onclick="changeNextShape()">Change Next</button>
-        <button type="button" class="btn btn-success" id="slowTimeButton" onclick="slowDownTime()">Slow Time</button>
-        <button type="button" class="btn btn-warning" id="killFallingButton" onclick="killFallingPiece()">Kill Piece</button>
-        <button type="button" class="btn btn-danger">TBA</button>
+        <button type="button" class="btn btn-primary btn-sm" id="slowTimeButton" onclick="slowDownTime()">Slow Time</button>
+        <button type="button" class="btn btn-success btn-sm" >TBA</button>
+        <button type="button" class="btn btn-warning btn-sm" id="nextShapeButton" onclick="changeNextShape()">Change Next</button>
+        <button type="button" class="btn btn-danger btn-sm" id="killFallingButton" onclick="killFallingPiece()">Kill Piece</button>
+        <button type="button" class="btn btn-info btn-sm">TBA</button>
     </div>
-    </center>
     <!-- CANVAS (where a majority of the game takes place) -->
     <div id="gameCanvas">
         <canvas></canvas>
     </div>
+    <button type="button" class="btn btn-secondary btn-sm btn-block" id="resetGameButton" onclick="resetGame()"><b>New Game</b></button></span>
+    </center>
     <!-- JAVASCRIPT (where the game's functionality is put) -->
     <script>
         var slowTime = false;
@@ -147,9 +164,9 @@
             }
         });
         // User Input (Mouse)
-        addEventListener('click', function () {
+        //addEventListener('click', function () {
             //startNewGame();
-        });
+        //});
  
         addEventListener('keyup', function () {
             keyDown = false;
@@ -408,10 +425,10 @@
             fillRect(clickRect, titlebgColor);
  
             g.fillStyle = textColor;
-            g.fillText('☠️☠️☠️', titleX, titleY);
+            g.fillText('R.I.P.', titleX, titleY);
  
             g.font = smallFont;
-            g.fillText('Refresh to Reset', clickX, clickY);
+            g.fillText('Try Again?', clickX, clickY);
         }
  
         function fillRect(r, color) {
