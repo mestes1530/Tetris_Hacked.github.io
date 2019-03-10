@@ -27,7 +27,7 @@
         }
         canvas {
             position: absolute;
-            top: 7%;
+            top: 5%;
             left: 20%;
             width: 60%;
             height: 90%;
@@ -41,7 +41,7 @@
     <center>
     <div id="upgrades">
         <button type="button" class="btn btn-primary btn-sm" id="slowTimeButton" onclick="slowDownTime()">Slow Time</button>
-        <button type="button" class="btn btn-success btn-sm" >TBA</button>
+        <button type="button" class="btn btn-success btn-sm" id="autoFlipButton" onclick="autoFlipPiece()">Auto Flip</button>
         <button type="button" class="btn btn-warning btn-sm" id="nextShapeButton" onclick="changeNextShape()">Change Next</button>
         <button type="button" class="btn btn-danger btn-sm" id="killFallingButton" onclick="killFallingPiece()">Kill Piece</button>
         <button type="button" class="btn btn-info btn-sm">TBA</button>
@@ -110,6 +110,7 @@
  
         var keyDown = false;
         var fastDown = false;
+        var autoFlip = false;
  
         var grid = [];
         var scoreboard = new Scoreboard();
@@ -500,6 +501,11 @@
         }
  
         function drawFallingShape() {
+            // Used for Auto Flip
+            if (autoFlip === true) {
+                if (canRotate(fallingShape))
+                            rotate(fallingShape);
+            }
             var idx = fallingShape.ordinal;
             fallingShape.pos.forEach(function (p) {
                 drawSquare(idx, fallingShapeRow + p[1], fallingShapeCol + p[0]);
@@ -569,14 +575,6 @@
         }
 
         //START OF MY ADDED FUNCTIONS
-        function resetGame() {
-            startNewGame();
-        }
-
-        function changeNextShape() {
-            nextShape = getRandomShape();
-        }
-
         function slowDownTime() {
             if (slowTime === false)
                 {slowTime = true;}
@@ -584,9 +582,24 @@
                 {slowTime = false;}
         }
 
+        function autoFlipPiece() {
+            if (autoFlip === false)
+                {autoFlip = true;}
+            else
+                {autoFlip = false;}
+        }
+
+        function changeNextShape() {
+            nextShape = getRandomShape();
+        }
+
         function killFallingPiece() {
             killFalling = true;
         }
+
+        function resetGame() {
+            startNewGame();
+        }    
         //END OF MY ADDED FUNCTIONS
 
         init();
