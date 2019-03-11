@@ -1,6 +1,10 @@
+<!-- An open-source front-end tetris game with RPG elements written in JavaScript.  -->
+<!-- Game By: Mitchell Estes // Base Code From: https://rosettacode.org/wiki/Tetris/JavaScript -->
 <!DOCTYPE html>
 <html lang='en'>
+<!-- HEAD (Title, CDN and CSS) -->
 <head>
+    <!-- Title (Shown in Tab) -->
     <title>Tetris RPG</title>
     <meta charset='UTF-8'>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -8,6 +12,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <!-- CSS (Game Styling) -->
     <style>
         body {
             background-image: url('https://bilder.tapeto.com/item/images/2651/full/metropolis-michalsky-ab-9393-71-0.jpg');
@@ -16,7 +21,7 @@
             background-position: center;
             background-size: cover;   
         }
-        #upgrades {width: 72%;}
+        #upgrades {width: 74%;}
         .btn {width: 15%;}
         .btn-warning {color: white !important;}
         #resetGameButton {
@@ -34,43 +39,44 @@
         }
     </style>
 </head>
- 
+<!-- BODY (Buttons and Canvas) -->
 <body>
-
-    <!-- Buttons along the top -->
     <center>
+    <!-- Buttons used to give the player powerups while playing Tetris -->
     <div id="upgrades">
         <button type="button" class="btn btn-primary btn-sm" id="slowTimeButton" onclick="slowDownTime()">Slow Time</button>
         <button type="button" class="btn btn-success btn-sm" id="autoFlipButton" onclick="autoFlipPiece()">Auto Flip</button>
         <button type="button" class="btn btn-warning btn-sm" id="nextShapeButton" onclick="changeNextShape()">Change Next</button>
         <button type="button" class="btn btn-danger btn-sm" id="killFallingButton" onclick="killFallingPiece()">Kill Piece</button>
-        <button type="button" class="btn btn-info btn-sm">TBA</button>
+        <button type="button" class="btn btn-info btn-sm" id="floatPieceButton" onclick="floatPiece()">Float Piece</button>
     </div>
-    <!-- CANVAS (where a majority of the game takes place) -->
+    <!-- CANVAS (Game Display) -->
     <div id="gameCanvas">
         <canvas></canvas>
     </div>
-    <button type="button" class="btn btn-secondary btn-sm btn-block" id="resetGameButton" onclick="resetGame()"><b>New Game</b></button></span>
+    <!-- Starts a New Game -->
+    <div id="gameSettings">
+        <button type="button" class="btn btn-secondary btn-sm btn-block" id="resetGameButton" onclick="resetGame()"><b>New Game</b></button>
+    </div>
     </center>
-    <!-- JAVASCRIPT (where the game's functionality is put) -->
+    <!-- JAVASCRIPT (Game's Functionality) -->
     <script>
+        // Button related variables 
         var slowTime = false;
         var killFalling = false;
-
+        var pieceFloating = false;
+        // Canvs dimensions defined 
         'use strict';
         var canvas = document.querySelector('canvas');
         canvas.width = 640;
         canvas.height = 640;
- 
         var g = canvas.getContext('2d');
- 
         var right = { x: 1, y: 0 };
         var down = { x: 0, y: 1 };
         var left = { x: -1, y: 0 };
- 
         var EMPTY = -1;
         var BORDER = -2;
- 
+        // Shape definitions defined
         var fallingShape;
         var nextShape;
         var dim = 640;
@@ -111,6 +117,7 @@
         var keyDown = false;
         var fastDown = false;
         var autoFlip = false;
+        var floatGravity = false;
  
         var grid = [];
         var scoreboard = new Scoreboard();
@@ -208,10 +215,17 @@
         }
  
         function move(dir) {
+            // Used to Kill Falling Shapes
             if (killFalling === true) {
                 fallingShape = nextShape;
                 nextShape = getRandomShape();
                 killFalling = false;
+            }
+            // Used to Float Piece
+            if (floatGravity === true) {
+                fallingShapeRow += dir.y - 3;
+                fallingShapeCol += dir.x;
+                floatGravity = false;
             }
             fallingShapeRow += dir.y;
             fallingShapeCol += dir.x;
@@ -481,7 +495,6 @@
             g.fillText('lines      ' + scoreboard.getLines(), scoreX, scoreY + 60);
             g.fillText('score      ' + scoreboard.getScore(), scoreX, scoreY + 90);
 
- 
             // preview
             var minX = 5, minY = 5, maxX = 0, maxY = 0;
             nextShape.pos.forEach(function (p) {
@@ -597,6 +610,10 @@
             killFalling = true;
         }
 
+        function floatPiece() {
+            floatGravity = true;
+        }
+
         function resetGame() {
             startNewGame();
         }    
@@ -609,7 +626,5 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-
 </body>
- 
 </html>
