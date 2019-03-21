@@ -5,7 +5,7 @@
 <!-- HEAD (Title, CDN and CSS) -->
 <head>
     <!-- Title (Shown in Tab) -->
-    <title>Tetris RPG</title>
+    <title>🕹️Tetris Hacked🕹️</title>
     <meta charset='UTF-8'>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS CDN -->
@@ -109,54 +109,53 @@
         var gridBorderColor = 'black';
         var largeStroke = 5;
         var smallStroke = 2;
- 
-        // position of falling shape
+        // Position of falling shape
         var fallingShapeRow;
         var fallingShapeCol;
- 
+        // Power up bools
         var keyDown = false;
         var fastDown = false;
         var autoFlip = false;
         var floatGravity = false;
- 
+        // Game and score boards
         var grid = [];
         var scoreboard = new Scoreboard();
         // User Input (Buttons)
         addEventListener('keydown', function (event) {
             if (!keyDown) {
                 keyDown = true;
- 
+                // Check if game is over
                 if (scoreboard.isGameOver())
                     return;
- 
+                // User has hit a relivant key
                 switch (event.key) {
- 
+                    // Restart game
                     case 'r':
                         startNewGame();
-
+                    // Rotate falling piece 
                     case ' ':
                         if (canRotate(fallingShape))
                             rotate(fallingShape);
                         break;
-
+                    // Soft piece drop
                     case 'w':
                     case 'ArrowUp':
                         if(canMove(fallingShape, down))
                             move(down);
                         break;       
- 
+                    // Move piece left
                     case 'a':
                     case 'ArrowLeft':
                         if (canMove(fallingShape, left))
                             move(left);
                         break;
- 
+                    // Move piece right
                     case 'd':
                     case 'ArrowRight':
                         if (canMove(fallingShape, right))
                             move(right);
                         break;
- 
+                    // Hard piece drop
                     case 's':
                     case 'ArrowDown':
                         if (!fastDown) {
@@ -175,45 +174,40 @@
         //addEventListener('click', function () {
             //startNewGame();
         //});
- 
         addEventListener('keyup', function () {
             keyDown = false;
             fastDown = false;
         });
- 
+        // Checks if falling piece can rotate given its position
         function canRotate(s) {
             if (s === Shapes.Square)
                 return false;
- 
             var pos = new Array(4);
             for (var i = 0; i < pos.length; i++) {
                 pos[i] = s.pos[i].slice();
             }
- 
             pos.forEach(function (row) {
                 var tmp = row[0];
                 row[0] = row[1];
                 row[1] = -tmp;
             });
- 
             return pos.every(function (p) {
                 var newCol = fallingShapeCol + p[0];
                 var newRow = fallingShapeRow + p[1];
                 return grid[newRow][newCol] === EMPTY;
             });
         }
- 
+        // Rotates the falling piece
         function rotate(s) {
             if (s === Shapes.Square)
                 return;
- 
             s.pos.forEach(function (row) {
                 var tmp = row[0];
                 row[0] = row[1];
                 row[1] = -tmp;
             });
         }
- 
+        // Moves the falling piece left, right, and controls the speed it falls 
         function move(dir) {
             // Used to Kill Falling Shapes
             if (killFalling === true) {
@@ -230,7 +224,7 @@
             fallingShapeRow += dir.y;
             fallingShapeCol += dir.x;
         }
- 
+        // Checks if user inputed move is possible
         function canMove(s, dir) {
             return s.pos.every(function (p) {
                 var newCol = fallingShapeCol + dir.x + p[0];
@@ -238,7 +232,7 @@
                 return grid[newRow][newCol] === EMPTY;
             });
         }
- 
+        // Called when falling shape comes in contact with bottom stack
         function shapeHasLanded() {
             addShape(fallingShape);
             if (fallingShapeRow < 2) {
@@ -249,7 +243,7 @@
             }
             selectShape();
         }
- 
+        // Clears multiple completed lines
         function removeLines() {
             var count = 0;
             for (var r = 0; r < nRows - 1; r++) {
@@ -264,7 +258,7 @@
             }
             return count;
         }
- 
+        // Clears rows in the bottom stack that have been completed 
         function removeLine(line) {
             for (var c = 0; c < nCols; c++)
                 grid[line][c] = EMPTY;
@@ -274,19 +268,19 @@
                     grid[r][c] = grid[r - 1][c];
             }
         }
- 
+        // Adds a new shape?
         function addShape(s) {
             s.pos.forEach(function (p) {
                 grid[fallingShapeRow + p[1]][fallingShapeCol + p[0]] = s.ordinal;
             });
         }
- 
+        // Defintion of a shape?
         function Shape(shape, o) {
             this.shape = shape;
             this.pos = this.reset();
             this.ordinal = o;
         }
- 
+        // Defintion of possible falling pieces
         var Shapes = {
             ZShape: [[0, -1], [0, 0], [-1, 0], [-1, 1]],
             SShape: [[0, -1], [0, 0], [1, 0], [1, 1]],
@@ -296,14 +290,14 @@
             LShape: [[-1, -1], [0, -1], [0, 0], [0, 1]],
             JShape: [[1, -1], [0, -1], [0, 0], [0, 1]]
         };
- 
+        // Picks a shape at random from the set of possible shapes
         function getRandomShape() {
             var keys = Object.keys(Shapes);
             var ord = Math.floor(Math.random() * keys.length);
             var shape = Shapes[keys[ord]];
             return new Shape(shape, ord);
         }
- 
+        // Resets shape
         Shape.prototype.reset = function () {
             this.pos = new Array(4);
             for (var i = 0; i < this.pos.length; i++) {
@@ -311,7 +305,7 @@
             }
             return this.pos;
         }
- 
+        // Selects the shape
         function selectShape() {
             fallingShapeRow = 1;
             fallingShapeCol = 5;
@@ -321,42 +315,40 @@
                 fallingShape.reset();
             }
         }
- 
+        // Scoreboard object and it's variables
         function Scoreboard() {
             this.MAXLEVEL = 9;
- 
             var level = 0;
             var lines = 0;
             var score = 0;
             var topscore = 0;
             var gameOver = true;
- 
+            // Resets scoreboard
             this.reset = function () {
                 this.setTopscore();
                 level = lines = score = 0;
                 gameOver = false;
             }
- 
+            // Ends the gamer
             this.setGameOver = function () {
                 gameOver = true;
             }
- 
             this.isGameOver = function () {
                 return gameOver;
             }
- 
+            // Sets the top scpre
             this.setTopscore = function () {
                 if (score > topscore) {
                     topscore = score;
                 }
             }
- 
+            // Gets the top score
             this.getTopscore = function () {
                 return topscore;
             }
- 
+            // Gets the speed of falling piece
             this.getSpeed = function () {
- 
+                // Speed set depending on current level
                 switch (level) {
                     case 0: return 700;
                     case 1: return 600;
@@ -371,13 +363,12 @@
                     default: return 100;
                 }
             }
- 
+            // Add point(s) to the score
             this.addScore = function (sc) {
                 score += sc;
             }
- 
+            // Update score based on number of lines cleared 
             this.addLines = function (line) {
- 
                 switch (line) {
                     case 1:
                         this.addScore(10);
@@ -394,68 +385,65 @@
                     default:
                         return;
                 }
- 
                 lines += line;
                 if (lines > 10) {
                     this.addLevel();
                 }
             }
- 
+            // Incrument the level and the speed
             this.addLevel = function () {
                 lines %= 10;
                 if (level < this.MAXLEVEL) {
                     level++;
                 }
             }
- 
+            // Get the current level
             this.getLevel = function () {
                 return level;
             }
- 
+            // Get the current number of lines cleared
             this.getLines = function () {
                 return lines;
             }
- 
+            // Gets the current score
             this.getScore = function () {
                 return score;
             }
         }
- 
+        // Draw's the game display (board and score)
         function draw() {
             g.clearRect(0, 0, canvas.width, canvas.height);
- 
             drawUI();
- 
-            if (scoreboard.isGameOver()) {
-                drawStartScreen();
-            } else {
-                drawFallingShape();
-            }
+            // Draw start screen if gameover
+            if (scoreboard.isGameOver()) 
+                {drawStartScreen();} 
+            // Draws the game otherwise
+            else 
+                {drawFallingShape();}
         }
- 
+        // The screen drawn when the player loses 
         function drawStartScreen() {
             g.font = mainFont;
- 
             fillRect(titleRect, titlebgColor);
             fillRect(clickRect, titlebgColor);
- 
+            // Center mesage 
             g.fillStyle = textColor;
             g.fillText('R.I.P.', titleX, titleY);
- 
+            // Bottom mesage
             g.font = smallFont;
             g.fillText('Try Again?', clickX, clickY);
         }
- 
+        // Fills a rect object with a specified color
         function fillRect(r, color) {
             g.fillStyle = color;
             g.fillRect(r.x, r.y, r.w, r.h);
         }
- 
+        // Draws rect object (piece)
         function drawRect(r, color) {
             g.strokeStyle = color;
             g.strokeRect(r.x, r.y, r.w, r.h);
         }
- 
+        // Draws square piece
         function drawSquare(colorIndex, r, c) {
             var bs = blockSize;
             g.fillStyle = colors[colorIndex];
@@ -465,14 +453,12 @@
             g.strokeStyle = squareBorder;
             g.strokeRect(leftMargin + c * bs, topMargin + r * bs, bs, bs);
         }
- 
+        // 
         function drawUI() {
- 
-            // background
+            // Webpage's background
             fillRect(outerRect, bgColor);
             fillRect(gridRect, gridColor);
- 
-            // the blocks dropped in the grid
+            // Pieces dropped in the grid
             for (var r = 0; r < nRows; r++) {
                 for (var c = 0; c < nCols; c++) {
                     var idx = grid[r][c];
@@ -480,22 +466,19 @@
                         drawSquare(idx, r, c);
                 }
             }
- 
-            // the borders of grid and preview panel
+            // Borders of grid and preview panel
             g.lineWidth = largeStroke;
             drawRect(gridRect, gridBorderColor);
             drawRect(previewRect, gridBorderColor);
             drawRect(outerRect, gridBorderColor);
- 
-            // scoreboard
+            // Scoreboard values set
             g.fillStyle = textColor;
             g.font = smallFont;
             g.fillText('hiscore    ' + scoreboard.getTopscore(), scoreX, scoreY);
             g.fillText('level      ' + scoreboard.getLevel(), scoreX, scoreY + 30);
             g.fillText('lines      ' + scoreboard.getLines(), scoreX, scoreY + 60);
             g.fillText('score      ' + scoreboard.getScore(), scoreX, scoreY + 90);
-
-            // preview
+            // Next Piece
             var minX = 5, minY = 5, maxX = 0, maxY = 0;
             nextShape.pos.forEach(function (p) {
                 minX = Math.min(minX, p[0]);
@@ -505,14 +488,13 @@
             });
             var cx = previewCenterX - ((minX + maxX + 1) / 2.0 * blockSize);
             var cy = previewCenterY - ((minY + maxY + 1) / 2.0 * blockSize);
- 
             g.translate(cx, cy);
             nextShape.shape.forEach(function (p) {
                 drawSquare(nextShape.ordinal, p[1], p[0]);
             });
             g.translate(-cx, -cy);
         }
- 
+        // Draw falling piece at appropriate position
         function drawFallingShape() {
             // Used for Auto Flip
             if (autoFlip === true) {
@@ -524,25 +506,20 @@
                 drawSquare(idx, fallingShapeRow + p[1], fallingShapeCol + p[0]);
             });
         }
- 
+       // Animates piece falling
        function animate(lastFrameTime) {
             var requestId = requestAnimationFrame(function () {
                 animate(lastFrameTime);
             });
- 
             var time = new Date().getTime();
             // Used to slow down time
-            if (slowTime === false) {
-                var delay = scoreboard.getSpeed();
-            }
-            else {
-                var delay = (scoreboard.getSpeed() * 2);
-            }
- 
+            if (slowTime === false) 
+                {var delay = scoreboard.getSpeed();}
+            else 
+                {var delay = (scoreboard.getSpeed() * 2);}
+            // Animates falling piece
             if (lastFrameTime + delay < time) {
- 
                 if (!scoreboard.isGameOver()) {
- 
                     if (canMove(fallingShape, down)) {
                         move(down);
                     } else {
@@ -550,20 +527,19 @@
                     }
                     draw();
                     lastFrameTime = time;
- 
                 } else {
                     cancelAnimationFrame(requestId);
                 }
             }
         }
- 
+        // Restarts the current game
         function startNewGame() {
             initGrid();
             selectShape();
             scoreboard.reset();
             animate(-1);
         }
- 
+        // Initializes the game board
         function initGrid() {
             function fill(arr, value) {
                 for (var i = 0; i < arr.length; i++) {
@@ -579,48 +555,47 @@
                 }
             }
         }
- 
+        // Initializes the entire game display
         function init() {
             initGrid();
             selectShape();
             draw();
             startNewGame();
         }
-
         //START OF MY ADDED FUNCTIONS
+        // Slows down the speed pieces drop
         function slowDownTime() {
             if (slowTime === false)
                 {slowTime = true;}
             else
                 {slowTime = false;}
         }
-
+        // Falling piece will continiously rotate
         function autoFlipPiece() {
             if (autoFlip === false)
                 {autoFlip = true;}
             else
                 {autoFlip = false;}
         }
-
+        // Get a new random next piece
         function changeNextShape() {
             nextShape = getRandomShape();
         }
-
+        // Kills falling piece and gets next piece
         function killFallingPiece() {
             killFalling = true;
         }
-
+        // Floats pice up like a small jump
         function floatPiece() {
             floatGravity = true;
         }
-
+        // Resets the game
         function resetGame() {
             startNewGame();
         }    
         //END OF MY ADDED FUNCTIONS
-
+        // Initializes the game
         init();
-
     </script>
     <!-- Bootstrap JavaScript CDN -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
